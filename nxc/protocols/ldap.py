@@ -578,12 +578,14 @@ class ldap(connection):
         search_filter = "(userAccountControl:1.2.840.113556.1.4.803:=8192)"
         attributes = ["objectSid"]
         resp = self.search(search_filter, attributes, sizeLimit=0)
+        resp_parsed = parse_result_attributes(resp)
+        from pprint import pprint
+        pprint(resp_parsed)
         answers = []
         if resp and (self.password != "" or self.lmhash != "" or self.nthash != "" or self.aesKey != "") and self.username != "":
-            for attribute in resp[0][1]:
-                if str(attribute["type"]) == "objectSid":
-                    sid = self.sid_to_str(attribute["vals"][0])
-                    self.sid_domain = "-".join(sid.split("-")[:-1])
+            sid = self.sid_to_str(resp_parsed[0]["objectSid"])
+            print(sid)
+            self.sid_domain = "-".join(sid.split("-")[:-1])
 
             # 2. get all group cn name
             search_filter = "(|(objectSid=" + self.sid_domain + "-512)(objectSid=" + self.sid_domain + "-544)(objectSid=" + self.sid_domain + "-519)(objectSid=S-1-5-32-549)(objectSid=S-1-5-32-551))"
