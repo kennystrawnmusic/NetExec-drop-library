@@ -576,7 +576,7 @@ class ldap(connection):
     def check_if_admin(self):
         # 1. get SID of the domaine
         search_filter = "(userAccountControl:1.2.840.113556.1.4.803:=8192)"
-        attributes = ["objectSid"]
+        attributes = ["objectSid", "sAMAccountName", "distinguishedName"]
         resp = self.search(search_filter, attributes, sizeLimit=0)
         resp_parsed = parse_result_attributes(resp)
         from pprint import pprint
